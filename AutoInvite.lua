@@ -237,11 +237,11 @@ end)
 local orig_RaidFrame_Update = RaidFrame_Update
 RaidFrame_Update = function (a1,a2,a3,a4,a5,a6,a7,a8,a9)
 	if GetNumPartyMembers() + GetNumRaidMembers() > 0 then
-		kickAll:Show()
-		kickOfflines:Show()
+		kickAll:Enable()
+		kickOfflines:Enable()
 	else
-		kickAll:Hide()
-		kickOfflines:Hide()
+		kickAll:Disable()
+		kickOfflines:Disable()
 	end
 	orig_RaidFrame_Update(a1,a2,a3,a4,a5,a6,a7,a8,a9)
 end
