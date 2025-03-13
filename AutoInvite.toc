@@ -2,4 +2,5 @@
 ## Title: |cFF006699Optional -|r AutoInvite
 ## Notes: Automatically sends a group invite to someone who whispers you using the prescribed string.
 ## SavedVariables: AutoInviteOptions
+## Dependencies: Blizzard_RaidUI
 AutoInvite.xml

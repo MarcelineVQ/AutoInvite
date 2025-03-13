@@ -184,3 +184,64 @@ function AutoInvite_Invite(who)
 		end
 	end
 end
+
+StaticPopupDialogs["AUTOINV_KICK_ALL"] = {
+	text = "Kick all group members?",
+	button1 = "Kick",
+	button2 = "Cancel",
+	timeout = 0,
+	whileDead = true,
+	hideOnEscape = true,
+	OnAccept = function()
+		local pnum = GetNumPartyMembers()
+		local rnum = GetNumRaidMembers()
+		pnum = pnum > 0 and pnum or nil
+		rnum = rnum > 0 and rnum or nil
+
+		for i = 1, rnum or pnum or 0 do
+			local unitID = (rnum and "raid" or "party") .. i
+			UninviteFromParty(unitID)
+		end
+	end,
+}
+
+local kickAll = CreateFrame("Button", nil, RaidFrame, "UIPanelButtonTemplate")
+kickAll:SetPoint("BOTTOMLEFT", RaidFrame,"TOPLEFT", 60, -10)
+kickAll:SetWidth(60)
+kickAll:SetHeight(20)
+kickAll:SetText("Kick All")
+kickAll:SetScript("OnClick", function ()
+	StaticPopup_Show("AUTOINV_KICK_ALL")
+end)
+
+local kickOfflines = CreateFrame("Button", nil, RaidFrame, "UIPanelButtonTemplate")
+kickOfflines:SetPoint("LEFT", kickAll,"RIGHT", 0, 0)
+kickOfflines:SetWidth(90)
+kickOfflines:SetHeight(20)
+kickOfflines:SetText("Kick Offline")
+kickOfflines:SetScript("OnClick", function ()
+	local pnum = GetNumPartyMembers()
+	local rnum = GetNumRaidMembers()
+	pnum = pnum > 0 and pnum or nil
+	rnum = rnum > 0 and rnum or nil
+
+	for i = 1, rnum or pnum or 0 do
+		local unitID = (rnum and "raid" or "party") .. i
+		if not UnitIsConnected(unitID) then
+			UninviteFromParty(unitID)
+		end
+	end
+end)
+
+-- hook raidframe to hide buttons when not needed
+local orig_RaidFrame_Update = RaidFrame_Update
+RaidFrame_Update = function (a1,a2,a3,a4,a5,a6,a7,a8,a9)
+	if GetNumPartyMembers() + GetNumRaidMembers() > 0 then
+		kickAll:Show()
+		kickOfflines:Show()
+	else
+		kickAll:Hide()
+		kickOfflines:Hide()
+	end
+	orig_RaidFrame_Update(a1,a2,a3,a4,a5,a6,a7,a8,a9)
+end
