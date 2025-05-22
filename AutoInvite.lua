@@ -1,7 +1,7 @@
 AutoInviteOptions = {};
 local Realm;
 local Player;
-local version = "0.6";
+local version = "0.7";
 local default_invite = "+";
 
 function AutoInvite_OnLoad()
@@ -10,7 +10,7 @@ function AutoInvite_OnLoad()
 	this:RegisterEvent("PLAYER_ENTERING_WORLD");
 
 	SlashCmdList["AutoInvite"] = AutoInvite_SlashHandler;
-	SLASH_AutoInvite1 = "/AutoInvite";
+	SLASH_AutoInvite1 = "/autoinvite";
 	SLASH_AutoInvite2 = "/ai";
 
 	DEFAULT_CHAT_FRAME:AddMessage("AutoInvite (redux) v"..version.." loaded. Type /ai for usage.",0,0,1);
@@ -26,7 +26,7 @@ function AutoInvite_InitializeSetup()
 	if(AutoInviteOptions[Realm][Player] == nil) then AutoInviteOptions[Realm][Player] = {} end;
 	if(AutoInviteOptions[Realm][Player]["Invite"] == nil) then AutoInviteOptions[Realm][Player]["Invite"] = default_invite end;
 	if(AutoInviteOptions[Realm][Player]["Status"] == nil) then AutoInviteOptions[Realm][Player]["Status"] = "On" end;
-	if(AutoInviteOptions[Realm][Player]["Type"] == nil) then AutoInviteOptions[Realm][Player]["Type"] = "Party" end;
+	if(AutoInviteOptions[Realm][Player]["Type"] == nil) then AutoInviteOptions[Realm][Player]["Type"] = "Raid" end;
 	if(AutoInviteOptions[Realm][Player]["LogOFF"] == nil) then AutoInviteOptions[Realm][Player]["LogOFF"] = "On" end;
 
 	-- hook logoff
@@ -236,6 +236,7 @@ end)
 -- hook raidframe to hide buttons when not needed
 local orig_RaidFrame_Update = RaidFrame_Update
 RaidFrame_Update = function (a1,a2,a3,a4,a5,a6,a7,a8,a9)
+	-- todo, also check for lead or assist
 	if GetNumPartyMembers() + GetNumRaidMembers() > 0 then
 		kickAll:Enable()
 		kickOfflines:Enable()
